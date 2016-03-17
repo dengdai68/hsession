@@ -1,6 +1,7 @@
 package com.hsession.filter;
 
 import com.hsession.request.HSessionRequest;
+import com.hsession.session.HSession;
 import org.apache.log4j.Logger;
 
 import javax.servlet.*;
@@ -26,8 +27,11 @@ public class HSessionFilter implements Filter{
 		HSessionRequest hsessionRequest = new HSessionRequest(httpRequest, httpResponse,
 				filterConfig.getServletContext());
 		chain.doFilter(hsessionRequest,httpResponse);
+		HSession session = (HSession)hsessionRequest.getSession();
+		if (session != null){
+			session.syncCache();
+		}
 	}
-
 	@Override
 	public void init(FilterConfig filterConfig) throws ServletException {
 		logger.info("RequestFilter Initializing ");

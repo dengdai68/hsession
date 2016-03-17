@@ -1,6 +1,6 @@
 package com.hsession.request;
 
-import com.hsession.session.HSessionSession;
+import com.hsession.session.HSession;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
@@ -11,7 +11,7 @@ import javax.servlet.http.HttpSession;
 public class HSessionRequest extends HttpServletRequestWrapper {
 
     private ServletContext context;
-    private HSessionSession session;
+    private HSession session;
     private HttpServletResponse response;
 
     public HSessionRequest(HttpServletRequest request,
@@ -27,4 +27,7 @@ public class HSessionRequest extends HttpServletRequestWrapper {
         return getSession(false);
     }
 
+    private void buildSession(){
+
+    }
 }
