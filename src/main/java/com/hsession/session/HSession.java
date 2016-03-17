@@ -37,7 +37,13 @@ public class HSession implements HttpSession ,Serializable{
 		this.attribute_cache_key = this.id + "_attribute";
 		this.header_cache_key = this.id + "_header";
 		sessionHeader = (HSessionHeader) CacheManager.get(this.header_cache_key);
+		if(sessionHeader == null){
+			sessionHeader = new HSessionHeader();
+		}
 		sessionAttribute = (HSessionAttribute) CacheManager.get(this.attribute_cache_key);
+		if(sessionAttribute == null){
+			sessionAttribute = new HSessionAttribute();
+		}
 	}
 	public HSession(){
 	}
@@ -124,6 +130,7 @@ public class HSession implements HttpSession ,Serializable{
 	}
 
 	public void syncCache(){
+		this.sessionHeader.setLastAccessedTime(System.currentTimeMillis());
 		CacheManager.set(this.header_cache_key,this.sessionHeader,this.maxInactiveInterval);
 		CacheManager.set(this.attribute_cache_key,this.sessionAttribute,this.maxInactiveInterval);
 	}

@@ -1,10 +1,12 @@
 package com.hsession.request;
 
 import com.hsession.session.HSession;
+import com.hsession.utils.StringUtils;
 import org.apache.log4j.Logger;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.*;
+import java.util.UUID;
 
 public class HSessionRequest extends HttpServletRequestWrapper {
 
@@ -13,12 +15,14 @@ public class HSessionRequest extends HttpServletRequestWrapper {
     private ServletContext context;
     private HSession session;
     private HttpServletResponse response;
-    private String sessionKey = "sessionId";
+    private String sessionKey = "JSESSIONID";
 
     public HSessionRequest(HttpServletRequest request,
                            HttpServletResponse response,
                            ServletContext context) {
         super(request);
+        this.response = response;
+        this.context = context;
     }
     public HttpSession getSession(boolean create) {
         if(create){
@@ -37,14 +41,16 @@ public class HSessionRequest extends HttpServletRequestWrapper {
         try {
             Cookie[] cookies = this.getCookies();
             String sessionId = null;
-            for(Cookie cookie : cookies){
-                if(sessionKey.equals(cookie.getName())){
-                    sessionId = cookie.getValue();
-                    break;
+            if(cookies != null){
+                for(Cookie cookie : cookies){
+                    if(sessionKey.equals(cookie.getName())){
+                        sessionId = cookie.getValue();
+                        break;
+                    }
                 }
             }
-            if(sessionId == null){
-                sessionId = System.currentTimeMillis() + "";
+            if(StringUtils.isEmpty(sessionId)){
+                sessionId = UUID.randomUUID().toString();
                 Cookie cookie = new Cookie(sessionKey, sessionId);
                 this.response.addCookie(cookie);
             }

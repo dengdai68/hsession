@@ -15,10 +15,12 @@ public class MemCached implements Cache {
     private void load(){
         try {
             Properties properties = new Properties();
-            InputStream resourceAsStream = Cache.class.getResourceAsStream("/app.properties");
+            InputStream resourceAsStream = Cache.class.getResourceAsStream("/cache.properties");
             properties.load(resourceAsStream);
-            String [] servers = properties.getProperty("").split(",");
-            String [] weights = properties.getProperty("").split(",");
+            String serversValue = properties.getProperty("cache.servers");
+            String weightsValue = properties.getProperty("cache.server.weights");
+            String [] servers = serversValue.split(",");
+            String [] weights = weightsValue.split(",");
             Integer[] weights_ = new Integer[weights.length];
             for(int i=0;i<weights.length;i++){
                 weights_[i] = Integer.valueOf(weights[i]);
