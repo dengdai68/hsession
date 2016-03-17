@@ -1,11 +1,8 @@
 package com.hsession.cache;
 
-import org.cache.*;
-import org.cache.MemCached;
-
 public class CacheManager {
 	
-	private static org.cache.Cache cache = new MemCached();
+	private static Cache cache = new MemCached();
     private static int default_expiry = 60*60*24;
 
     public static Object get(String key) {

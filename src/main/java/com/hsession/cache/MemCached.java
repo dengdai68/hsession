@@ -1,22 +1,21 @@
 package com.hsession.cache;
 
+import com.danga.MemCached.MemCachedClient;
+import com.danga.MemCached.SockIOPool;
+import org.apache.log4j.Logger;
+
 import java.io.InputStream;
 import java.util.Date;
 import java.util.Properties;
 
-import com.danga.MemCached.MemCachedClient;
-import com.danga.MemCached.SockIOPool;
-import org.apache.log4j.Logger;
-import org.cache.*;
-
-public class MemCached implements org.cache.Cache {
+public class MemCached implements Cache {
     private static final Logger logger = Logger.getLogger(MemCached.class);
     boolean init = false;
 	private MemCachedClient memcachedClient ;
     private void load(){
         try {
             Properties properties = new Properties();
-            InputStream resourceAsStream = org.cache.Cache.class.getResourceAsStream("/app.properties");
+            InputStream resourceAsStream = Cache.class.getResourceAsStream("/app.properties");
             properties.load(resourceAsStream);
             String [] servers = properties.getProperty("").split(",");
             String [] weights = properties.getProperty("").split(",");

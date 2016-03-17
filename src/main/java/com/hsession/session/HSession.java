@@ -112,7 +112,7 @@ public class HSession implements HttpSession ,Serializable{
 
 	@Override
 	public void invalidate() {
-		//TODO
+		getSessionAttribute().removeAllAttribute();
 	}
 
 	@Override
@@ -125,7 +125,7 @@ public class HSession implements HttpSession ,Serializable{
 	}
 
 	public void syncCache(){
-		//TODO
+		//TODO 同步session信息到 cache
 	}
 
 	private HSessionAttribute getSessionAttribute() {
