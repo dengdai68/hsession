@@ -1,5 +1,9 @@
 package com.hsession.session;
 
+import com.hsession.cache.CacheManager;
+import com.hsession.exception.ConstructorException;
+import com.hsession.utils.StringUtils;
+
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpSessionContext;
@@ -7,80 +11,80 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
-import java.util.Map;
 
 
 public class HSession implements HttpSession ,Serializable{
 
 	private static final long serialVersionUID = -3185547114527487307L;
 	
-	private String sessionId;
+	private String id;
 	private boolean delay = false;
 	private HSessionHeader sessionHeader;
 	private HSessionAttribute sessionAttribute;
 	private ServletContext context;
-	private int MaxInactiveInterval = 0;
+	private int maxInactiveInterval = 60*10;
 	private boolean isNew = true;
+	private String header_cache_key;
+	private String attribute_cache_key;
 
 
-	public HSession(ServletContext context,String sessionId){
+	public HSession(ServletContext context,String id) throws Exception{
+		if(StringUtils.isEmpty(id) || context == null){
+			throw new ConstructorException("session Constructor error");
+		}
 		this.context = context;
-		this.sessionId = sessionId;
+		this.id = id;
+		this.attribute_cache_key = this.id + "_attribute";
+		this.header_cache_key = this.id + "_header";
+		sessionHeader = (HSessionHeader) CacheManager.get(this.header_cache_key);
+		sessionAttribute = (HSessionAttribute) CacheManager.get(this.attribute_cache_key);
 	}
 	public HSession(){
 	}
-	@Override
+
 	public long getCreationTime() {
 		return sessionHeader.getCreationTime();
 	}
 
-	@Override
 	public String getId() {
-		return sessionId;
+		return id;
 	}
 
-	@Override
 	public long getLastAccessedTime() {
 		return sessionHeader.getLastAccessedTime();
 	}
 
-	@Override
 	public ServletContext getServletContext() {
 		return context;
 	}
 
-	@Override
 	public void setMaxInactiveInterval(int i) {
-		this.MaxInactiveInterval = i;
+		this.maxInactiveInterval = i;
 	}
 
-	@Override
 	public int getMaxInactiveInterval() {
-		return this.MaxInactiveInterval;
+		return this.maxInactiveInterval;
 	}
 
-	@Override
 	@Deprecated
 	public HttpSessionContext getSessionContext() {
 		return null;
 	}
 
-	@Override
 	public Object getAttribute(String s) {
 		return this.getSessionAttribute().getAttribute(s);
 	}
 
-	@Override
+	@Deprecated
 	public Object getValue(String s) {
 		return getAttribute(s);
 	}
 
-	@Override
 	public Enumeration<String> getAttributeNames() {
 		return this.getSessionAttribute().getAttributeNames();
 	}
 
-	@Override
+	@Deprecated
 	public String[] getValueNames() {
 		List<String> list = new ArrayList<String>();
 		Enumeration<String> enums = getAttributeNames();
@@ -90,32 +94,27 @@ public class HSession implements HttpSession ,Serializable{
 		return list.toArray(new String[list.size()]);
 	}
 
-	@Override
 	public void setAttribute(String s, Object o) {
 		this.getSessionAttribute().setAttribute(s,o);
 	}
-
-	@Override
+	@Deprecated
 	public void putValue(String s, Object o) {
 		setAttribute(s,o);
 	}
 
-	@Override
 	public void removeAttribute(String s) {
 		this.getSessionAttribute().removeAttribute(s);
 	}
 
-	@Override
+	@Deprecated
 	public void removeValue(String s) {
 		removeAttribute(s);
 	}
 
-	@Override
 	public void invalidate() {
 		getSessionAttribute().removeAllAttribute();
 	}
 
-	@Override
 	public boolean isNew() {
 		if(isNew){
 			isNew = false;
@@ -125,7 +124,8 @@ public class HSession implements HttpSession ,Serializable{
 	}
 
 	public void syncCache(){
-		//TODO 同步session信息到 cache
+		CacheManager.set(this.header_cache_key,this.sessionHeader,this.maxInactiveInterval);
+		CacheManager.set(this.attribute_cache_key,this.sessionAttribute,this.maxInactiveInterval);
 	}
 
 	private HSessionAttribute getSessionAttribute() {
