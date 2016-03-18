@@ -16,6 +16,7 @@ public class HSessionRequest extends HttpServletRequestWrapper {
     private HSession session;
     private HttpServletResponse response;
     private String sessionKey = "JSESSIONID";
+    private boolean sessionIdValid = false;
 
     public HSessionRequest(HttpServletRequest request,
                            HttpServletResponse response,
@@ -25,19 +26,6 @@ public class HSessionRequest extends HttpServletRequestWrapper {
         this.context = context;
     }
     public HttpSession getSession(boolean create) {
-        if(create){
-            if(this.session == null){
-                buildSession();
-            }
-        }
-        return session;
-    }
-
-    public HttpSession getSession() {
-        return getSession(false);
-    }
-
-    private void buildSession(){
         try {
             Cookie[] cookies = this.getCookies();
             String sessionId = null;
@@ -58,5 +46,11 @@ public class HSessionRequest extends HttpServletRequestWrapper {
         }catch (Exception e){
             logger.error("",e);
         }
+        return this.session;
     }
+
+    public HttpSession getSession() {
+        return getSession(false);
+    }
+
 }

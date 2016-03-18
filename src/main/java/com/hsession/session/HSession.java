@@ -26,6 +26,7 @@ public class HSession implements HttpSession ,Serializable{
 	private boolean isNew = true;
 	private String header_cache_key;
 	private String attribute_cache_key;
+	private boolean idValid;
 
 
 	public HSession(ServletContext context,String id) throws Exception{
@@ -39,11 +40,14 @@ public class HSession implements HttpSession ,Serializable{
 		sessionHeader = (HSessionHeader) CacheManager.get(this.header_cache_key);
 		if(sessionHeader == null){
 			sessionHeader = new HSessionHeader();
+		}else{
+			sessionHeader.setNew(false);
 		}
 		sessionAttribute = (HSessionAttribute) CacheManager.get(this.attribute_cache_key);
 		if(sessionAttribute == null){
 			sessionAttribute = new HSessionAttribute();
 		}
+		this.sessionHeader.setLastAccessedTime(System.currentTimeMillis());
 	}
 	public HSession(){
 	}
@@ -122,15 +126,10 @@ public class HSession implements HttpSession ,Serializable{
 	}
 
 	public boolean isNew() {
-		if(isNew){
-			isNew = false;
-			return true;
-		}
-		return false;
+		return this.sessionHeader.isNew();
 	}
 
 	public void syncCache(){
-		this.sessionHeader.setLastAccessedTime(System.currentTimeMillis());
 		CacheManager.set(this.header_cache_key,this.sessionHeader,this.maxInactiveInterval);
 		CacheManager.set(this.attribute_cache_key,this.sessionAttribute,this.maxInactiveInterval);
 	}
@@ -147,5 +146,13 @@ public class HSession implements HttpSession ,Serializable{
 			sessionHeader = new HSessionHeader();
 		}
 		return sessionHeader;
+	}
+
+	public boolean isIdValid() {
+		return idValid;
+	}
+
+	public void setIdValid(boolean idValid) {
+		this.idValid = idValid;
 	}
 }
