@@ -1,6 +1,5 @@
-package com.hsession.memcached;
+package com.hsession.cache;
 
-import com.hsession.cache.Cache;
 import com.whalin.MemCached.MemCachedClient;
 import com.whalin.MemCached.SockIOPool;
 import org.slf4j.Logger;
