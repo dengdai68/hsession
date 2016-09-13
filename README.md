@@ -24,20 +24,20 @@ cache.server.weights=10
 ###Maven第三方依赖
 ```
 <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>servlet-api</artifactId>
-            <version>2.5</version>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <version>1.7.7</version>
-        </dependency>
-        <dependency>
-            <groupId>com.whalin</groupId>
-            <artifactId>Memcached-Java-Client</artifactId>
-            <version>3.0.0</version>
-        </dependency>
+    <groupId>javax.servlet</groupId>
+    <artifactId>servlet-api</artifactId>
+    <version>2.5</version>
+</dependency>
+<dependency>
+    <groupId>org.slf4j</groupId>
+    <artifactId>slf4j-api</artifactId>
+    <version>1.7.7</version>
+</dependency>
+<dependency>
+    <groupId>com.whalin</groupId>
+    <artifactId>Memcached-Java-Client</artifactId>
+    <version>3.0.0</version>
+</dependency>
 ```
 >但是hsession可能会遇到的问题，需要考虑：
 
