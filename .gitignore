@@ -6,3 +6,7 @@
 *.jar
 *.war
 *.ear
+hsession-sample/src/main/resources/
+out/
+session/src/test/
+session/target/
