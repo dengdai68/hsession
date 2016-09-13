@@ -41,7 +41,7 @@ public class MemCached implements Cache {
             this.memcachedClient = new MemCachedClient();
             this.init = true;
         }catch (Exception e){
-            logger.error("memcached init error!");
+            logger.error("memcached init error!",e);
         }
     }
 

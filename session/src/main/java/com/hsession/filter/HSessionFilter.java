@@ -1,9 +1,6 @@
 package com.hsession.filter;
 
-import com.hsession.request.HSessionRequest;
-import com.hsession.session.HSession;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.io.IOException;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -13,7 +10,13 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
+import javax.servlet.http.HttpSession;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.hsession.request.HSessionRequest;
+import com.hsession.session.HSession;
 
 public class HSessionFilter implements Filter{
 	private static final Logger logger = LoggerFactory.getLogger(HSessionFilter.class);
@@ -32,9 +35,10 @@ public class HSessionFilter implements Filter{
 		HSessionRequest hsessionRequest = new HSessionRequest(httpRequest, httpResponse,
 				filterConfig.getServletContext());
 		chain.doFilter(hsessionRequest,httpResponse);
-		HSession session = (HSession)hsessionRequest.getSession();
-		if (session != null){
-			session.syncCache();
+		HttpSession session = hsessionRequest.getSession();
+		session.setAttribute("userName","nihao");
+		if (session != null && session instanceof HSession){
+			((HSession)session).syncCache();
 		}
 	}
 	@Override
