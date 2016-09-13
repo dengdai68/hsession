@@ -11,7 +11,6 @@
     <modules>
         <module>hsession-sample</module>
         <module>session</module>
-        <module>session-cache</module>
     </modules>
 
 
