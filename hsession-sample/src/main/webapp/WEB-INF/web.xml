@@ -5,6 +5,8 @@
 <web-app>
   <display-name>Archetype Created Web Application</display-name>
 
+  <!-- 此过滤器 放在filter的最上面,否则可能 在此 filter 上面的filter 获取的session
+  不是从memcache获取的,如果上面的filter 没有用到session则不影响-->
   <filter>
     <filter-name>sessionFilter</filter-name>
     <filter-class>com.hsession.filter.HSessionFilter</filter-class>

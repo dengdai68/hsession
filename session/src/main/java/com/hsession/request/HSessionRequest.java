@@ -47,9 +47,11 @@ public class HSessionRequest extends HttpServletRequestWrapper {
                 Cookie cookie = new Cookie(sessionKey, sessionId);
                 this.response.addCookie(cookie);
             }
-            this.session = new HSession(this.context,sessionId);
+            int maxInactiveInterval = super.getSession(true).getMaxInactiveInterval();
+            this.session = new HSession(this.context,sessionId,maxInactiveInterval);
         }catch (Exception e){
             logger.error("",e);
+            return super.getSession(create);
         }
         return this.session;
     }

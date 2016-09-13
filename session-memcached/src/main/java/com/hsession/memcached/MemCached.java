@@ -1,5 +1,6 @@
-package com.hsession.cache;
+package com.hsession.memcached;
 
+import com.hsession.cache.Cache;
 import com.whalin.MemCached.MemCachedClient;
 import com.whalin.MemCached.SockIOPool;
 import org.slf4j.Logger;
@@ -41,7 +42,7 @@ public class MemCached implements Cache {
             this.memcachedClient = new MemCachedClient();
             this.init = true;
         }catch (Exception e){
-            logger.error("memcached init error!");
+            logger.error("memcached init error!",e);
         }
     }
 

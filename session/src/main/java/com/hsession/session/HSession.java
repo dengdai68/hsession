@@ -1,19 +1,25 @@
 package com.hsession.session;
 
-import com.hsession.cache.CacheManager;
-import com.hsession.exception.ConstructorException;
-import com.hsession.utils.StringUtils;
-
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpSession;
-import javax.servlet.http.HttpSessionContext;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpSession;
+import javax.servlet.http.HttpSessionContext;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.hsession.cache.CacheManager;
+import com.hsession.exception.ConstructorException;
+import com.hsession.utils.StringUtils;
+
 
 public class HSession implements HttpSession ,Serializable{
+
+	private static final Logger logger = LoggerFactory.getLogger(HSession.class);
 
 	private static final long serialVersionUID = -3185547114527487307L;
 	
@@ -22,19 +28,23 @@ public class HSession implements HttpSession ,Serializable{
 	private HSessionHeader sessionHeader;
 	private HSessionAttribute sessionAttribute;
 	private ServletContext context;
-	private int maxInactiveInterval = 60*10;
+	private int maxInactiveInterval = 60*1000*30;
 	private boolean isNew = true;
 	private String header_cache_key;
 	private String attribute_cache_key;
 	private boolean idValid;
 
 
-	public HSession(ServletContext context,String id) throws Exception{
-		if(StringUtils.isEmpty(id) || context == null){
+	public HSession(){
+	}
+
+	public HSession(ServletContext context, String sessionId, int
+			maxInactiveInterval) throws Exception{
+		if(StringUtils.isEmpty(sessionId) || context == null){
 			throw new ConstructorException("session Constructor error");
 		}
 		this.context = context;
-		this.id = id;
+		this.id = sessionId;
 		this.attribute_cache_key = this.id + "_attribute";
 		this.header_cache_key = this.id + "_header";
 		sessionHeader = (HSessionHeader) CacheManager.get(this.header_cache_key);
@@ -48,8 +58,9 @@ public class HSession implements HttpSession ,Serializable{
 			sessionAttribute = new HSessionAttribute();
 		}
 		this.sessionHeader.setLastAccessedTime(System.currentTimeMillis());
-	}
-	public HSession(){
+		if(maxInactiveInterval != 0){
+			this.maxInactiveInterval = maxInactiveInterval;
+		}
 	}
 
 	public long getCreationTime() {
@@ -131,7 +142,9 @@ public class HSession implements HttpSession ,Serializable{
 
 	public void syncCache(){
 		CacheManager.set(this.header_cache_key,this.sessionHeader,this.maxInactiveInterval);
+		logger.debug("synchronize cache key:{} value:{}",this.header_cache_key,this.sessionHeader);
 		CacheManager.set(this.attribute_cache_key,this.sessionAttribute,this.maxInactiveInterval);
+		logger.debug("synchronize cache key:{} value:{}",this.attribute_cache_key,this.sessionAttribute);
 	}
 
 	private HSessionAttribute getSessionAttribute() {
