@@ -19,7 +19,7 @@ hsession是一个解决j2ee 项目session共享问题的一个小工具，能够
 
 ### cache.properties配置
 
-```
+```properties
 #cache类型,可以使用自己写的其他类来实现com.hsession.cache.Cache
 cache.type=com.hsession.memcached.MemCached
 #memcached 缓存ip:port ，用,分隔 使用分布式memcache服务器
